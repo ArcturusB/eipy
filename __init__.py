@@ -72,4 +72,4 @@ from .eipy import open_shell
 
 ipshell = create_shell()
 def sh():
-    open_shell(ipshell)
+    open_shell(ipshell, stack_depth=3)

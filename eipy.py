@@ -70,8 +70,19 @@ def create_shell():
 
     return ipshell
 
-def open_shell(ipshell):
+def open_shell(ipshell, stack_depth=2):
     ''' Open an embedded ipython shell, displaying info message and traceback.
+
+    Parameters
+    ==========
+    ipshell : IPython.terminal.embed.InteractiveShellEmbed
+        The embedded IPython shell to open.
+    stack_depth : int (default: 2)
+        How far to go back in the depth. This should be set so that we go back
+        to the point where the user prompts the shell opening.
+        The default value is 2 because it is the one that should be used when
+        the user accesses directly this function through
+        `eipy.eipy.open_shell(ipshell)`.
     '''
 
     # Display traceback info. If some exception has been raised, show nicely
@@ -91,4 +102,4 @@ def open_shell(ipshell):
         msg += '\n'.join(stack)
 
     # Open shell going back to the level where ipsh() was called
-    ipshell(msg, stack_depth=2)
+    ipshell(msg, stack_depth=stack_depth)
