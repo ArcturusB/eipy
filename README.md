@@ -9,16 +9,20 @@ Usage
 
 To add a single breakpoint in your code, use:
 
-    import eipy.here
+~~~python
+import eipy.here
+~~~
 
 this will open an embedded IPython shell where you can examine any object.
 
 You may add multiple breakpoints:
     
-    import eipy
-    eipy.sh() # breakpoint 1
-    do_something()
-    eipy.sh() # breakpoint 2
+~~~python
+import eipy
+eipy.sh() # breakpoint 1
+do_something()
+eipy.sh() # breakpoint 2
+~~~
 
 From any embedded shell, hit Ctrl-D to resume execution. Type %kill_embedded to
 deactivate future breakpoints.
