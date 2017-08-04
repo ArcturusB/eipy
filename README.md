@@ -39,10 +39,6 @@ TODO
 ----
 
 - Load configuration from ~/.ipython/profile_default/ipython_config.py.
-- Display full traceback when catching exception, and coloured traceback when
-  not catching exception.
-- Limit traceback when using inside an IPython session and not catching an
-  exception.
 
 
 References and credit

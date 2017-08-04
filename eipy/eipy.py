@@ -16,6 +16,24 @@ except (SyntaxError, ImportError):
     def ansi_format(string, **kwargs):
         return string
 
+def _frameinfo_to_record(frameinfo):
+    ''' Convert a inspect.FrameInfo object to a record tuple, as expected by
+    ultratb printers.
+    '''
+    frame = frameinfo.frame
+    file = frameinfo.filename
+    lnum = frameinfo.lineno
+    func = frameinfo.function
+    lines = frameinfo.code_context
+    if lines is None:
+        lines = []
+    context = len(lines)
+    if context > 1:
+        index = 1
+    else:
+        index = 0
+    return frame, file, lnum, func, lines, index
+
 def create_shell():
     ''' Create an embedded ipython shell.
     '''
@@ -70,7 +88,7 @@ def create_shell():
 
     return ipshell
 
-def open_shell(ipshell, stack_depth=2):
+def open_shell(ipshell, stack_depth=2, context=3):
     ''' Open an embedded ipython shell, displaying info message and traceback.
 
     Parameters
@@ -83,23 +101,20 @@ def open_shell(ipshell, stack_depth=2):
         The default value is 2 because it is the one that should be used when
         the user accesses directly this function through
         `eipy.eipy.open_shell(ipshell)`.
+    context : int (default: 3)
+        Number of lines of context to display when entering the shell.
     '''
 
-    # Display traceback info. If some exception has been raised, show nicely
-    # format traceback using ultratb. If no exception has been raised, show
-    # stack trace.
-    frame = inspect.currentframe().f_back
-    msg = 'Stopped at {0.f_code.co_filename} at line {0.f_lineno}'.format(frame)
-    msg += '\n'
-    etype, evalue, tb = sys.exc_info()
-    if tb:
-        vt = ultratb.VerboseTB()
-        msg += vt.text(etype, evalue, tb)
-    else:
-        stack = traceback.format_stack()
-        stack = stack[:-1]
-        msg += '\n'
-        msg += '\n'.join(stack)
+    # get the stack and current frame
+    stack = inspect.stack(context=context)
+    stack = stack[stack_depth - 1:] # stack up to before the user called eipy
+    frameinfo = stack[0] # frame where the user called eipy
+
+    vt = ultratb.VerboseTB(include_vars=False)
+
+    # display where the user called eipy, as well as a the context
+    msg = 'Stopped at '
+    msg += vt.format_record(*_frameinfo_to_record(frameinfo))
 
     # Open shell going back to the level where ipsh() was called
     ipshell(msg, stack_depth=stack_depth)
