@@ -25,7 +25,7 @@ deactivate future breakpoints.
 Dependencies
 ------------
 
-[ansi_codes](https://git.pelouze.net/gabriel/ansi_codes) may *optionally* be
+[ansi_codes](https://github.com/gpelouze/ansi_codes) may *optionally* be
 installed to get nicely-formatted messages in Python 3.
 
 
